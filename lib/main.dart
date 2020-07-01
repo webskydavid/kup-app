@@ -1,5 +1,5 @@
 import 'dart:io' as io;
-
+import 'package:file_chooser/file_chooser.dart' as fc;
 import 'package:flutter/material.dart';
 
 void main() {
@@ -30,85 +30,131 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  String home = io.Platform.environment['HOME'];
-  String currentPath = '';
-  List<CustomPath> paths = [];
-
+  String repositoryPath = '';
+  String kupScriptPath = '';
   @override
   void initState() {
     super.initState();
-    currentPath = home;
-    _loadPath();
-  }
-
-  _loadPath() {
-    List<io.FileSystemEntity> pathList =
-        io.Directory('$currentPath').listSync(followLinks: true);
-
-    var p = pathList.where((e) {
-      CustomPath customPath = CustomPath.customPath(e.path);
-      return customPath.isDirectory;
-    });
-    paths = p.map<CustomPath>(
-      (e) {
-        return CustomPath.customPath(e.path);
-      },
-    ).toList();
-  }
-
-  String _getPrevPath() {
-    List splited = currentPath.split('/');
-    var withoutLastValue = splited.getRange(0, splited.length - 1);
-    return withoutLastValue.join('/');
   }
 
   @override
   Widget build(BuildContext context) {
+    print(io.Directory.current);
     return Scaffold(
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          OutlineButton(onPressed: () {}, child: Text('Select repository')),
-          OutlineButton(onPressed: () {}, child: Text('Select KUP script')),
-          home != currentPath
-              ? OutlineButton(
-                  onPressed: () {
-                    setState(() {
-                      currentPath = _getPrevPath();
-                      _loadPath();
-                    });
-                  },
-                  child: Text('< Back'),
-                )
-              : Text(''),
-          Container(
-            padding: EdgeInsets.all(8.0),
-            decoration: BoxDecoration(border: Border.all()),
-            height: 300.0,
-            width: 300.0,
-            child: ListView.builder(
-              itemCount: paths.length,
-              itemBuilder: (context, i) {
-                return GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      currentPath = paths[i].path;
-                      _loadPath();
-                    });
-                  },
-                  child: Text(paths[i].name),
-                );
-              },
+      body: Padding(
+        padding: const EdgeInsets.all(24.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Text(
+              'Repository path:',
+              style: TextStyle(color: Colors.grey),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8.0),
-            child: Text(currentPath),
-          ),
-          OutlineButton(onPressed: () {}, child: Text('Select directory'))
-        ],
+            _buildSelectRepositoryButton(),
+            SizedBox(
+              height: 20.0,
+            ),
+            Text(
+              'Kup-Script path:',
+              style: TextStyle(color: Colors.grey),
+            ),
+            _buildSelectKupScriptButton(),
+            SizedBox(
+              height: 20.0,
+            ),
+            OutlineButton.icon(
+              textColor: Colors.green[700],
+              padding: EdgeInsets.symmetric(horizontal: 26.0, vertical: 16.0),
+              onPressed: () {},
+              icon: Icon(Icons.autorenew),
+              label: Text('Generate list'),
+            ),
+            Container(
+              child: Table(
+                children: [
+                  TableRow(children: [
+                    Text('fwfe'),
+                    Text('fewfe'),
+                  ])
+                ],
+              ),
+            )
+          ],
+        ),
       ),
+    );
+  }
+
+  Row _buildSelectKupScriptButton() {
+    return Row(
+      children: [
+        OutlineButton.icon(
+          textColor: Colors.blue[700],
+          padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 5.0),
+          onPressed: () async {
+            var paths = await fc.showOpenPanel(
+              canSelectDirectories: true,
+              allowsMultipleSelection: false,
+            );
+
+            setState(() {
+              kupScriptPath = paths.paths[0];
+            });
+          },
+          icon: Icon(Icons.folder_open),
+          label: Text(
+            'Select a folder',
+            style: TextStyle(fontSize: 10.0),
+          ),
+        ),
+        SizedBox(
+          width: 10.0,
+        ),
+        Text(
+          kupScriptPath,
+          style: TextStyle(
+            fontSize: 12.0,
+            fontWeight: FontWeight.w600,
+          ),
+        )
+      ],
+    );
+  }
+
+  Row _buildSelectRepositoryButton() {
+    return Row(
+      children: [
+        OutlineButton.icon(
+          textColor: Colors.blue[700],
+          padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 5.0),
+          onPressed: () async {
+            var paths = await fc.showOpenPanel(
+              canSelectDirectories: true,
+              allowsMultipleSelection: false,
+            );
+
+            setState(() {
+              repositoryPath = paths.paths[0];
+            });
+          },
+          icon: Icon(Icons.folder_open),
+          label: Text(
+            'Select a folder',
+            style: TextStyle(fontSize: 10.0),
+          ),
+        ),
+        SizedBox(
+          width: 10.0,
+        ),
+        Text(
+          repositoryPath,
+          style: TextStyle(
+            fontSize: 12.0,
+            fontWeight: FontWeight.w600,
+          ),
+        )
+      ],
     );
   }
 }
