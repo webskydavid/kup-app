@@ -1,6 +1,7 @@
 import 'dart:io' as io;
 import 'package:file_chooser/file_chooser.dart' as fc;
 import 'package:flutter/material.dart';
+import 'package:process_run/shell.dart' as shell;
 
 void main() {
   runApp(MyApp());
@@ -53,7 +54,7 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             _buildSelectRepositoryButton(),
             SizedBox(
-              height: 20.0,
+              height: 6.0,
             ),
             Text(
               'Kup-Script path:',
@@ -61,22 +62,50 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             _buildSelectKupScriptButton(),
             SizedBox(
-              height: 20.0,
+              height: 6.0,
             ),
             OutlineButton.icon(
               textColor: Colors.green[700],
               padding: EdgeInsets.symmetric(horizontal: 26.0, vertical: 16.0),
-              onPressed: () {},
+              onPressed: repositoryPath != '' && kupScriptPath != ''
+                  ? () async {
+                      String p = '$kupScriptPath/main.sh';
+                      List arg = [repositoryPath, "2020-01-01", "2020-02-31"];
+
+                      var s = shell.Shell();
+                      var r = await s.run(p);
+                      print(r.toList());
+                    }
+                  : null,
               icon: Icon(Icons.autorenew),
               label: Text('Generate list'),
             ),
             Container(
               child: Table(
                 children: [
-                  TableRow(children: [
-                    Text('fwfe'),
-                    Text('fewfe'),
-                  ])
+                  TableRow(
+                    children: [
+                      Text(
+                        'R',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Text(
+                        'fewfe',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                  TableRow(
+                    decoration: BoxDecoration(),
+                    children: [
+                      Text('fwfe'),
+                      Text('fewfe'),
+                    ],
+                  )
                 ],
               ),
             )
@@ -98,9 +127,11 @@ class _MyHomePageState extends State<MyHomePage> {
               allowsMultipleSelection: false,
             );
 
-            setState(() {
-              kupScriptPath = paths.paths[0];
-            });
+            if (!paths.canceled) {
+              setState(() {
+                kupScriptPath = paths.paths[0];
+              });
+            }
           },
           icon: Icon(Icons.folder_open),
           label: Text(
@@ -133,10 +164,11 @@ class _MyHomePageState extends State<MyHomePage> {
               canSelectDirectories: true,
               allowsMultipleSelection: false,
             );
-
-            setState(() {
-              repositoryPath = paths.paths[0];
-            });
+            if (!paths.canceled) {
+              setState(() {
+                repositoryPath = paths.paths[0];
+              });
+            }
           },
           icon: Icon(Icons.folder_open),
           label: Text(
