@@ -26,6 +26,8 @@ dependencies:
   path_provider: ^1.6.11
   process_run: ^0.10.10+2
   csv: ^4.0.3
+  http: ^0.12.1
+  archive: ^2.0.13
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
