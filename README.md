@@ -1,16 +1,17 @@
-# kup_app
+![alt text](macos/Runner/Assets.xcassets/AppIcon.appiconset/poop-64.png "Logo Title Text 1")
+**KUP**app**ka**
 
-A new Flutter project.
+For now there is only support for macOS. Put the kup_app.dmg file into application directory and run the app.
 
-## Getting Started
+### TODO
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- [ ] CI for building app
+- [x] Splashscreen
+- [x] Downloading kup-script from repo
+- [x] Extracting zip file with kup-script
+- [ ] Choose repository directory
+- [ ] Changing date range
+- [ ] Generating CSV by date range into `csv` folder
+- [ ] Showing list for current data range after generating
+- [ ] Fill data for word template **(optional)**
+- [ ] Generate pdf file
