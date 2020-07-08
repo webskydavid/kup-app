@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:kup_app/pages/splashscreen.page.dart';
-import 'package:kup_app/providers/main.provider.dart';
-import 'package:provider/provider.dart';
+import 'package:kup_app/views/main.view.dart';
+import 'package:kup_app/views/splashscreen.view.dart';
 import 'package:stacked/stacked.dart';
-import 'package:states_rebuilder/states_rebuilder.dart';
 
-import 'pages/main.page.dart';
+import 'views/models/main.model.dart';
 
 void main() {
   runApp(MyApp());
@@ -20,21 +18,13 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: MultiProvider(
-        providers: [
-          ChangeNotifierProvider<MainProvider>(
-            create: (context) => MainProvider(),
-          )
-        ],
-        child: ViewModelBuilder<MainProvider>.reactive(
-          viewModelBuilder: () => MainProvider(),
-          onModelReady: (model) => model.init(),
-          staticChild: MainPage(),
-          builder: (context, model, child) {
-            print(model.busy);
-            return model.busy ? SplashscreenPage() : child;
-          },
-        ),
+      home: ViewModelBuilder<MainViewModel>.reactive(
+        viewModelBuilder: () => MainViewModel(),
+        onModelReady: (model) async => await model.init(),
+        builder: (context, model, child) {
+          print(model.isBusy);
+          return model.isBusy ? SplashscreenPage() : MainView();
+        },
       ),
     );
   }
