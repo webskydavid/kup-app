@@ -1,4 +1,5 @@
 ![alt text](macos/Runner/Assets.xcassets/AppIcon.appiconset/poop-64.png "Logo Title Text 1")
+
 **KUP**app**ka**
 
 For now there is only support for macOS. Put the kup_app.dmg file into application directory and run the app.
