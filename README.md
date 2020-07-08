@@ -10,7 +10,7 @@ For now there is only support for macOS. Put the kup_app.dmg file into applicati
 - [x] Splashscreen
 - [x] Downloading kup-script from repo
 - [x] Extracting zip file with kup-script
-- [ ] Choose repository directory and save path locally
+- [x] Choose repository directory and save path locally
 - [ ] Changing date range
 - [ ] Generating CSV by date range into `csv` folder
 - [ ] Showing list for current data range after generating
