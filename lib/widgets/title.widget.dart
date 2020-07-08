@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 class TitleWidget extends StatelessWidget {
-  Color color = Colors.white;
-  TitleWidget({Key key, this.color}) : super(key: key);
+  final Color color;
+  TitleWidget({Key key, @required this.color}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

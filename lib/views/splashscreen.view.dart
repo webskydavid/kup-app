@@ -35,7 +35,7 @@ class ScriptDownloaderWidget extends StatelessWidget {
           ),
           Column(
             children: [
-              TitleWidget(),
+              TitleWidget(color: Colors.brown[100]),
               SizedBox(
                 height: 10.0,
               ),

@@ -1,3 +1,4 @@
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stacked/stacked.dart';
 import 'dart:io';
 import 'dart:typed_data';
@@ -17,6 +18,7 @@ class VALUES {
 }
 
 class MainViewModel extends BaseViewModel {
+  SharedPreferences shared;
   String repositoryDirectory = '';
   String workingDirectory = '';
   Shell shell;
@@ -28,8 +30,11 @@ class MainViewModel extends BaseViewModel {
   Future<void> init() async {
     print('init()');
     setBusy(true);
+    shared = await SharedPreferences.getInstance();
     workingDirectory = await getWorkingDirectory();
     shell = Shell(workingDirectory: workingDirectory);
+    getRepositoryDirectory();
+
     await createDirectory(VALUES.csvDirectory);
     await getKupScript();
     await unzipAndSave();
@@ -83,14 +88,13 @@ class MainViewModel extends BaseViewModel {
 
   void setRepositoryDirectory(String path) async {
     print('setRepositoryDirectory()');
-    //await shared.setString('repositoryDirectory', path);
+    await shared.setString('repositoryDirectory', path);
     repositoryDirectory = path;
-
     notifyListeners();
   }
 
   void getRepositoryDirectory() {
-    //repositoryDirectory = shared.getString('repositoryDirectory');
+    repositoryDirectory = shared.getString('repositoryDirectory');
   }
 
   void generateListFromCSV() {}
