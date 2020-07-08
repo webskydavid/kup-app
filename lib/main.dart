@@ -22,7 +22,6 @@ class MyApp extends StatelessWidget {
         viewModelBuilder: () => MainViewModel(),
         onModelReady: (model) async => await model.init(),
         builder: (context, model, child) {
-          print(model.isBusy);
           return model.isBusy ? SplashscreenPage() : MainView();
         },
       ),
