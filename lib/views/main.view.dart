@@ -1,19 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:file_chooser/file_chooser.dart' as fc;
+import 'package:kup_app/views/models/main.model.dart';
 import 'package:kup_app/widgets/title.widget.dart';
+import 'package:stacked/stacked.dart';
 
-class MainView extends StatefulWidget {
-  MainView({Key key}) : super(key: key);
-
-  @override
-  _MainViewState createState() => _MainViewState();
-}
-
-class _MainViewState extends State<MainView> {
-  String repositoryPath = '';
+class MainView extends ViewModelWidget<MainViewModel> {
+  const MainView({Key key}) : super(key: key, reactive: true);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, MainViewModel model) {
+    print('workingDir ${model.workingDirectory}');
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(24.0),
@@ -29,7 +25,6 @@ class _MainViewState extends State<MainView> {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                //ScriptDownloaderWidget(),
                 SizedBox(
                   height: 12.0,
                 ),
@@ -37,7 +32,7 @@ class _MainViewState extends State<MainView> {
                   'Repository path:',
                   style: TextStyle(color: Colors.grey),
                 ),
-                _buildSelectRepositoryButton(),
+                _buildSelectRepositoryButton(model),
                 SizedBox(
                   height: 12.0,
                 ),
@@ -62,7 +57,7 @@ class _MainViewState extends State<MainView> {
     );
   }
 
-  Row _buildSelectRepositoryButton() {
+  Row _buildSelectRepositoryButton(MainViewModel model) {
     return Row(
       children: [
         OutlineButton.icon(
@@ -73,29 +68,20 @@ class _MainViewState extends State<MainView> {
               canSelectDirectories: true,
               allowsMultipleSelection: false,
             );
-            if (!paths.canceled) {}
+            if (!paths.canceled) {
+              model.setRepositoryDirectory(paths.paths[0]);
+            }
           },
           icon: Icon(Icons.folder_open),
           label: Text(
-            'Select a folder',
+            'Select folder',
             style: TextStyle(fontSize: 10.0),
           ),
         ),
         SizedBox(
           width: 10.0,
         ),
-        // WhenRebuilderOr(
-        //   observe: () => mainProvider,
-        //   builder: (context, model) {
-        //     return Text(
-        //       model.state.repositoryDirectory,
-        //       style: TextStyle(
-        //         fontSize: 12.0,
-        //         fontWeight: FontWeight.w600,
-        //       ),
-        //     );
-        //   },
-        // ),
+        Text(model.repositoryDirectory)
       ],
     );
   }

@@ -30,9 +30,9 @@ class MainViewModel extends BaseViewModel {
     setBusy(true);
     workingDirectory = await getWorkingDirectory();
     shell = Shell(workingDirectory: workingDirectory);
-    // await createDirectory(VALUES.csvDirectory);
-    // await getKupScript();
-    // await unzipAndSave();
+    await createDirectory(VALUES.csvDirectory);
+    await getKupScript();
+    await unzipAndSave();
     setBusy(false);
   }
 
@@ -82,8 +82,11 @@ class MainViewModel extends BaseViewModel {
   }
 
   void setRepositoryDirectory(String path) async {
+    print('setRepositoryDirectory()');
     //await shared.setString('repositoryDirectory', path);
     repositoryDirectory = path;
+
+    notifyListeners();
   }
 
   void getRepositoryDirectory() {
