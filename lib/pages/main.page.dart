@@ -1,12 +1,7 @@
 import 'package:flutter/material.dart';
-import 'dart:io' as io;
-import 'dart:typed_data';
-import 'package:archive/archive_io.dart';
 import 'package:file_chooser/file_chooser.dart' as fc;
 import 'package:kup_app/providers/main.provider.dart';
-import 'package:process_run/shell.dart' as shell;
-import 'package:path_provider/path_provider.dart' as path_provider;
-import 'package:http/http.dart' as http;
+import 'package:kup_app/widgets/title.widget.dart';
 import 'package:states_rebuilder/states_rebuilder.dart';
 
 class MainPage extends StatefulWidget {
@@ -26,42 +21,43 @@ class _MainPageState extends State<MainPage> {
         padding: const EdgeInsets.all(24.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            WhenRebuilder(
-              initState: (context, model) {
-                model.setState((s) => s.init());
-              },
-              observe: () => RM.get<MainProvider>(),
-              onData: (MainProvider data) {
-                print('StateBuilder');
-                return Text(data.workingDirectory);
-              },
-              onError: (e) {
-                print(e);
-                return Text('error');
-              },
-              onWaiting: () => LinearProgressIndicator(),
-              onIdle: () => Text('onIdle'),
-            ),
-            Text(
-              'Repository path:',
-              style: TextStyle(color: Colors.grey),
-            ),
-            _buildSelectRepositoryButton(),
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            TitleWidget(color: Colors.black),
             SizedBox(
-              height: 6.0,
+              height: 15.0,
             ),
-            SizedBox(
-              height: 6.0,
-            ),
-            OutlineButton.icon(
-              textColor: Colors.green[700],
-              padding: EdgeInsets.symmetric(horizontal: 26.0, vertical: 16.0),
-              onPressed: repositoryPath != '' ? () async {} : null,
-              icon: Icon(Icons.autorenew),
-              label: Text('Generate list'),
-            ),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                //ScriptDownloaderWidget(),
+                SizedBox(
+                  height: 12.0,
+                ),
+                Text(
+                  'Repository path:',
+                  style: TextStyle(color: Colors.grey),
+                ),
+                _buildSelectRepositoryButton(),
+                SizedBox(
+                  height: 12.0,
+                ),
+                // StateBuilder<MainProvider>(
+                //   observe: () => mainProvider,
+                //   builder: (context, model) => OutlineButton.icon(
+                //     textColor: Colors.green[700],
+                //     padding:
+                //         EdgeInsets.symmetric(horizontal: 26.0, vertical: 16.0),
+                //     onPressed: model.state.repositoryDirectory != ''
+                //         ? () async {}
+                //         : null,
+                //     icon: Icon(Icons.autorenew),
+                //     label: Text('Generate list'),
+                //   ),
+                // ),
+              ],
+            )
           ],
         ),
       ),
@@ -79,11 +75,7 @@ class _MainPageState extends State<MainPage> {
               canSelectDirectories: true,
               allowsMultipleSelection: false,
             );
-            if (!paths.canceled) {
-              setState(() {
-                repositoryPath = paths.paths[0];
-              });
-            }
+            if (!paths.canceled) {}
           },
           icon: Icon(Icons.folder_open),
           label: Text(
@@ -94,13 +86,18 @@ class _MainPageState extends State<MainPage> {
         SizedBox(
           width: 10.0,
         ),
-        Text(
-          repositoryPath,
-          style: TextStyle(
-            fontSize: 12.0,
-            fontWeight: FontWeight.w600,
-          ),
-        )
+        // WhenRebuilderOr(
+        //   observe: () => mainProvider,
+        //   builder: (context, model) {
+        //     return Text(
+        //       model.state.repositoryDirectory,
+        //       style: TextStyle(
+        //         fontSize: 12.0,
+        //         fontWeight: FontWeight.w600,
+        //       ),
+        //     );
+        //   },
+        // ),
       ],
     );
   }
