@@ -1,17 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:file_chooser/file_chooser.dart' as fc;
-import 'package:kup_app/providers/main.provider.dart';
 import 'package:kup_app/widgets/title.widget.dart';
-import 'package:states_rebuilder/states_rebuilder.dart';
 
-class MainPage extends StatefulWidget {
-  MainPage({Key key}) : super(key: key);
+class MainView extends StatefulWidget {
+  MainView({Key key}) : super(key: key);
 
   @override
-  _MainPageState createState() => _MainPageState();
+  _MainViewState createState() => _MainViewState();
 }
 
-class _MainPageState extends State<MainPage> {
+class _MainViewState extends State<MainView> {
   String repositoryPath = '';
 
   @override
