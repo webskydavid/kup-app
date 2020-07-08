@@ -12,33 +12,46 @@ class VALUES {
   static String commit = 'master';
   static String zipFileName = 'script.zip';
   static String kupScriptDirectory = 'kup-script';
+  static String csvDirectory = 'csv';
 }
 
-class MainProvider {
+class MainProvider extends ChangeNotifier {
+  bool busy = true;
+  String repositoryDirectory = '';
   String workingDirectory = '';
   Shell shell;
   Client http = Client();
+  List commitList = [];
 
-  void init() async {
+  MainProvider();
+
+  Future<void> init() async {
+    print('init()');
     workingDirectory = await getWorkingDirectory();
     shell = Shell(workingDirectory: workingDirectory);
-
-    getKupScript();
-    unzipAndSave();
+    // await createDirectory(VALUES.csvDirectory);
+    // await getKupScript();
+    // await unzipAndSave();
+    busy = false;
+    notifyListeners();
   }
 
-  void getKupScript() async {
-    Response res = await http.get(
-      VALUES.gitRepositoryUrl + VALUES.commit,
-      headers: {'Accept': 'application/vnd.github.v3+json'},
-    );
-    File file = File('$workingDirectory/script.zip');
-    await file.writeAsBytes(res.bodyBytes);
+  Future<void> getKupScript() async {
+    print('getKupScript()');
+    if (!(await scriptFolderExists())) {
+      Response res = await http.get(
+        VALUES.gitRepositoryUrl + VALUES.commit,
+        headers: {'Accept': 'application/vnd.github.v3+json'},
+      );
+      File file = File('$workingDirectory/script.zip');
+      await file.writeAsBytes(res.bodyBytes);
+    }
   }
 
-  void unzipAndSave() async {
+  Future<void> unzipAndSave() async {
+    print('unzipAndSave()');
     try {
-      if (await zipFileExists() && await scriptFolderNotExists()) {
+      if (!(await scriptFolderExists()) && await zipFileExists()) {
         Uint8List zip =
             File('$workingDirectory/${VALUES.zipFileName}').readAsBytesSync();
         Archive files = ZipDecoder().decodeBytes(zip);
@@ -68,11 +81,24 @@ class MainProvider {
     }
   }
 
-  Future<bool> zipFileExists() async {
-    return !(await File('$workingDirectory/${VALUES.zipFileName}').exists());
+  void setRepositoryDirectory(String path) async {
+    //await shared.setString('repositoryDirectory', path);
+    repositoryDirectory = path;
   }
 
-  Future<bool> scriptFolderNotExists() async {
+  void getRepositoryDirectory() {
+    //repositoryDirectory = shared.getString('repositoryDirectory');
+  }
+
+  void generateListFromCSV() {}
+
+  Future<bool> zipFileExists() async {
+    print('zipFileExists()');
+    return await File('$workingDirectory/${VALUES.zipFileName}').exists();
+  }
+
+  Future<bool> scriptFolderExists() async {
+    print('scriptFolderExists()');
     return await Directory('$workingDirectory/${VALUES.kupScriptDirectory}')
         .exists();
   }
@@ -83,8 +109,14 @@ class MainProvider {
   }
 
   Future<String> getWorkingDirectory() async {
+    print('getWorkingDirectory()');
     // TODO: remove delay
     await Future.delayed(Duration(milliseconds: 2000));
     return (await getApplicationSupportDirectory()).path;
+  }
+
+  Future<void> createDirectory(String folder) async {
+    print('createDirectory()');
+    return await Directory('$workingDirectory/$folder').create();
   }
 }
