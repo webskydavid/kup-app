@@ -21,6 +21,7 @@ class MainViewModel extends BaseViewModel {
   SharedPreferences shared;
   String repositoryDirectory = '';
   String workingDirectory = '';
+  String scriptDirectory = '';
   Shell shell;
   Client http = Client();
   List commitList = [];
@@ -32,7 +33,8 @@ class MainViewModel extends BaseViewModel {
     setBusy(true);
     shared = await SharedPreferences.getInstance();
     workingDirectory = await getWorkingDirectory();
-    shell = Shell(workingDirectory: workingDirectory);
+    scriptDirectory = '$workingDirectory/${VALUES.kupScriptDirectory}';
+    shell = Shell(workingDirectory: scriptDirectory, commandVerbose: true);
     getRepositoryDirectory();
 
     await createDirectory(VALUES.csvDirectory);
@@ -61,25 +63,21 @@ class MainViewModel extends BaseViewModel {
             File('$workingDirectory/${VALUES.zipFileName}').readAsBytesSync();
         Archive files = ZipDecoder().decodeBytes(zip);
         String stringToReplace = files[0].name;
-        Directory('$workingDirectory/${VALUES.kupScriptDirectory}')
-            .createSync();
+        Directory('$scriptDirectory').createSync();
 
         files.forEach((element) async {
           String fileName =
               element.name.replaceFirst(RegExp(stringToReplace), '');
           if (element.isFile) {
             List<int> data = element.content as List<int>;
-            File file = File(
-                '$workingDirectory/${VALUES.kupScriptDirectory}/$fileName');
+            File file = File('$scriptDirectory/$fileName');
             file.createSync(recursive: true);
             file.writeAsBytesSync(data);
-            //await changePermission(fileName);
           } else {
-            Directory(
-                    '$workingDirectory/${VALUES.kupScriptDirectory}/$fileName')
-                .createSync();
+            Directory('$scriptDirectory/$fileName').createSync();
           }
         });
+        await changePermission();
       }
     } catch (e) {
       throw ErrorHint(e.toString());
@@ -97,8 +95,6 @@ class MainViewModel extends BaseViewModel {
     repositoryDirectory = shared.getString('repositoryDirectory');
   }
 
-  void generateListFromCSV() {}
-
   Future<bool> zipFileExists() async {
     print('zipFileExists()');
     return await File('$workingDirectory/${VALUES.zipFileName}').exists();
@@ -110,9 +106,8 @@ class MainViewModel extends BaseViewModel {
         .exists();
   }
 
-  Future<void> changePermission(String fileName) async {
-    return await shell.run(
-        'chmod 755 $workingDirectory/${VALUES.kupScriptDirectory}/$fileName');
+  Future<void> changePermission() async {
+    return await shell.run('chmod -R 755 $workingDirectory');
   }
 
   Future<String> getWorkingDirectory() async {
