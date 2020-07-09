@@ -24,7 +24,7 @@ class GenerateModelView extends BaseViewModel {
       ./generateKUPreportData.sh
     ''');
 
-    await generateListFromCSV();
+    //await generateListFromCSV();
     notifyListeners();
   }
 
