@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:file_chooser/file_chooser.dart' as fc;
+import 'package:kup_app/views/models/generate.model.dart';
 import 'package:kup_app/views/models/main.model.dart';
 import 'package:kup_app/widgets/title.widget.dart';
 import 'package:stacked/stacked.dart';
@@ -36,6 +37,8 @@ class MainView extends ViewModelWidget<MainViewModel> {
                 SizedBox(
                   height: 12.0,
                 ),
+
+                GenerateCSVWidget(),
                 // StateBuilder<MainProvider>(
                 //   observe: () => mainProvider,
                 //   builder: (context, model) => OutlineButton.icon(
@@ -83,6 +86,107 @@ class MainView extends ViewModelWidget<MainViewModel> {
         ),
         Text(model.repositoryDirectory)
       ],
+    );
+  }
+}
+
+class GenerateCSVWidget extends ViewModelWidget<MainViewModel> {
+  GenerateCSVWidget({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context, MainViewModel mainViewModel) {
+    print(mainViewModel.repositoryDirectory);
+    return ViewModelBuilder<GenerateModelView>.reactive(
+      viewModelBuilder: () => GenerateModelView(),
+      fireOnModelReadyOnce: true,
+      onModelReady: (model) => model.init(mainViewModel),
+      builder: (context, model, child) {
+        return Column(
+          children: [
+            // RaisedButton(
+            //   onPressed: () {
+            //     model.run();
+            //   },
+            //   child: Text('Run'),
+            // ),
+            CommitListWidget()
+          ],
+        );
+      },
+    );
+  }
+}
+
+class CommitListWidget extends ViewModelWidget<GenerateModelView> {
+  CommitListWidget({Key key}) : super(key: key, reactive: true);
+
+  @override
+  Widget build(BuildContext context, GenerateModelView model) {
+    List<List<dynamic>> list = model.commitList;
+
+    print(list);
+    return list.length > 0
+        ? SingleChildScrollView(
+            child: buildDataTable(list),
+            scrollDirection: Axis.vertical,
+          )
+        : Text('Hir listen!');
+  }
+
+  DataTable buildDataTable(List<List> list) {
+    return DataTable(
+      columns: <DataColumn>[
+        DataColumn(
+          label: Text(
+            'Name',
+            style: TextStyle(fontStyle: FontStyle.italic),
+          ),
+        ),
+        DataColumn(
+          label: Text(
+            'Age',
+            style: TextStyle(fontStyle: FontStyle.italic),
+          ),
+        ),
+        DataColumn(
+          label: Text(
+            'Role',
+            style: TextStyle(fontStyle: FontStyle.italic),
+          ),
+        ),
+        DataColumn(
+          label: Text(
+            'Role',
+            style: TextStyle(fontStyle: FontStyle.italic),
+          ),
+        ),
+        DataColumn(
+          label: Text(
+            'Role',
+            style: TextStyle(fontStyle: FontStyle.italic),
+          ),
+        ),
+        DataColumn(
+          label: Text(
+            'Role',
+            style: TextStyle(fontStyle: FontStyle.italic),
+          ),
+        ),
+      ],
+      rows: List.generate(
+        10,
+        (i) => DataRow(
+          cells: List.generate(
+            6,
+            (y) {
+              print(list[i][y]);
+              return DataCell(Text('fwefe'));
+            },
+          ),
+        ),
+      ),
     );
   }
 }

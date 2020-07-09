@@ -6,13 +6,19 @@ For now there is only support for macOS. Put the kup_app.dmg file into applicati
 
 ### TODO
 
+##### Stage 1
+
 - [ ] CI for building app
 - [x] Splashscreen
 - [x] Downloading kup-script from repo
 - [x] Extracting zip file with kup-script
-- [ ] Choose repository directory
+- [x] Choose repository directory
 - [ ] Changing date range
-- [ ] Generating CSV by date range into `csv` folder
+- [x] Generating CSV by date range into `csv` folder
+
+##### Stage 2
+
 - [ ] Showing list for current data range after generating
 - [ ] Fill data for word template **(optional)**
 - [ ] Generate pdf file
+      ...
