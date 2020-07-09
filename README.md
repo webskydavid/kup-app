@@ -2,7 +2,7 @@
 
 **KUP**app**ka**
 
-For now there is only support for macOS. Put the kup_app.dmg file into application directory and run the app.
+For now there is only support for macOS. ~~Put the kup_app.app file into application directory and run the app.~~
 
 ### TODO
 
@@ -14,11 +14,15 @@ For now there is only support for macOS. Put the kup_app.dmg file into applicati
 - [x] Extracting zip file with kup-script
 - [x] Choose repository directory
 - [ ] Changing date range
-- [x] Generating CSV by date range into `csv` folder
+- [x] Generating CSV by date range (static)
 
 ##### Stage 2
 
 - [ ] Showing list for current data range after generating
 - [ ] Fill data for word template **(optional)**
 - [ ] Generate pdf file
+
+##### State 3
+
+- [ ] Listing commit history with sorting
       ...
