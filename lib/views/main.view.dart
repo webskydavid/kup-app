@@ -105,12 +105,18 @@ class GenerateCSVWidget extends ViewModelWidget<MainViewModel> {
       builder: (context, model, child) {
         return Column(
           children: [
-            // RaisedButton(
-            //   onPressed: () {
-            //     model.run();
-            //   },
-            //   child: Text('Run'),
-            // ),
+            OutlineButton(
+              borderSide: BorderSide(
+                color: Colors.green[400],
+              ),
+              hoverColor: Colors.green[50],
+              textColor: Colors.green[500],
+              padding: EdgeInsets.all(20),
+              onPressed: () {
+                model.run();
+              },
+              child: Text('Run script!'),
+            ),
             CommitListWidget()
           ],
         );
