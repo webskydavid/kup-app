@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:csv/csv.dart';
-import 'package:csv/csv_settings_autodetection.dart';
 import 'package:kup_app/views/models/main.model.dart';
 import 'package:stacked/stacked.dart';
 

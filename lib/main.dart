@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:stacked/stacked.dart';
 
-import 'views/main.view.dart';
-import 'views/models/main.model.dart';
-import 'views/splashscreen.view.dart';
+import 'package:kup_app/views/main.view.dart';
+import 'package:kup_app/views/models/main.model.dart';
+import 'package:kup_app/views/splashscreen.view.dart';
 
 void main() {
   runApp(MyApp());
