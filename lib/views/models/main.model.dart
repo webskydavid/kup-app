@@ -113,7 +113,7 @@ class MainViewModel extends BaseViewModel {
   Future<String> getWorkingDirectory() async {
     print('getWorkingDirectory()');
     // TODO: remove delay
-    await Future.delayed(Duration(milliseconds: 2000));
+    await Future.delayed(Duration(milliseconds: 500));
     return (await getApplicationSupportDirectory()).path;
   }
 
