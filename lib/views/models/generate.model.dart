@@ -5,8 +5,18 @@ import 'package:kup_app/views/models/main.model.dart';
 import 'package:stacked/stacked.dart';
 
 class GenerateModelView extends BaseViewModel {
+  String startDate = '2020-07-01';
+  String endDate = '2020-07-31';
   MainViewModel mainViewModel;
   List<List<dynamic>> commitList = [];
+
+  set setStartDate(value) {
+    startDate = value;
+  }
+
+  set setEndDate(value) {
+    endDate = value;
+  }
 
   init(model) {
     mainViewModel = model;
