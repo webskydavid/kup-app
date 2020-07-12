@@ -1,5 +1,3 @@
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:stacked/stacked.dart';
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:archive/archive.dart';
@@ -17,34 +15,27 @@ class VALUES {
   static String csvDirectory = 'csv';
 }
 
-class MainViewModel extends BaseViewModel {
-  SharedPreferences shared;
-  String repositoryDirectory = '';
+class MainService {
   String workingDirectory = '';
   String scriptDirectory = '';
   Shell shell;
   Client http = Client();
   List commitList = [];
 
-  MainViewModel();
+  MainService();
 
-  Future<void> init() async {
-    print('init()');
-    setBusy(true);
-    shared = await SharedPreferences.getInstance();
+  Future<MainService> init() async {
     workingDirectory = await getWorkingDirectory();
     scriptDirectory = '$workingDirectory/${VALUES.kupScriptDirectory}';
     shell = Shell(workingDirectory: scriptDirectory, commandVerbose: true);
-    getRepositoryDirectory();
 
     await createDirectory(VALUES.csvDirectory);
     await getKupScript();
     await unzipAndSave();
-    setBusy(false);
+    return this;
   }
 
   Future<void> getKupScript() async {
-    print('getKupScript()');
     if (!(await scriptFolderExists())) {
       Response res = await http.get(
         VALUES.gitRepositoryUrl + VALUES.commit,
@@ -56,7 +47,6 @@ class MainViewModel extends BaseViewModel {
   }
 
   Future<void> unzipAndSave() async {
-    print('unzipAndSave()');
     try {
       if (!(await scriptFolderExists()) && await zipFileExists()) {
         Uint8List zip =
@@ -84,24 +74,11 @@ class MainViewModel extends BaseViewModel {
     }
   }
 
-  void setRepositoryDirectory(String path) async {
-    print('setRepositoryDirectory()');
-    await shared.setString('repositoryDirectory', path);
-    repositoryDirectory = path;
-    notifyListeners();
-  }
-
-  void getRepositoryDirectory() {
-    repositoryDirectory = shared.getString('repositoryDirectory');
-  }
-
   Future<bool> zipFileExists() async {
-    print('zipFileExists()');
     return await File('$workingDirectory/${VALUES.zipFileName}').exists();
   }
 
   Future<bool> scriptFolderExists() async {
-    print('scriptFolderExists()');
     return await Directory('$workingDirectory/${VALUES.kupScriptDirectory}')
         .exists();
   }
@@ -111,14 +88,12 @@ class MainViewModel extends BaseViewModel {
   }
 
   Future<String> getWorkingDirectory() async {
-    print('getWorkingDirectory()');
     // TODO: remove delay
     await Future.delayed(Duration(milliseconds: 500));
     return (await getApplicationSupportDirectory()).path;
   }
 
   Future<void> createDirectory(String folder) async {
-    print('createDirectory()');
     return await Directory('$workingDirectory/$folder').create();
   }
 }

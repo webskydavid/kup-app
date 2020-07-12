@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:kup_app/views/models/generate.model.dart';
-import 'package:stacked/stacked.dart';
 
-class CommitListWidget extends ViewModelWidget<GenerateModelView> {
-  CommitListWidget({Key key}) : super(key: key, reactive: true);
+class CommitListWidget extends StatelessWidget {
+  CommitListWidget({Key key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context, GenerateModelView model) {
-    List<List<dynamic>> list = model.commitList;
+  Widget build(BuildContext context) {
+    List<List<dynamic>> list = [];
     return list.length > 0
         ? SingleChildScrollView(
             child: buildDataTable(list),

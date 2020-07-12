@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:stacked/stacked.dart';
+import 'package:kup_app/services/generator.service.dart';
+import 'package:kup_app/services/main.service.dart';
 
 import 'package:kup_app/views/main.view.dart';
-import 'package:kup_app/views/models/main.model.dart';
 import 'package:kup_app/views/splashscreen.view.dart';
+import 'package:states_rebuilder/states_rebuilder.dart';
 
 void main() {
+  RM.debugWidgetsRebuild = true;
+  RM.debugPrintActiveRM = true;
   runApp(MyApp());
 }
 
@@ -18,12 +21,24 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: ViewModelBuilder<MainViewModel>.reactive(
-        viewModelBuilder: () => MainViewModel(),
-        fireOnModelReadyOnce: true,
-        onModelReady: (model) async => await model.init(),
-        builder: (context, model, child) {
-          return model.isBusy ? SplashscreenPage() : MainView();
+      home: Injector(
+        inject: [
+          Inject<MainService>.future(() => MainService().init()),
+          Inject<GeneratorService>.future(() async {
+            final mainService = await RM.get<MainService>().stateAsync;
+            var gs = GeneratorService(mainService);
+            await gs.init();
+            return gs;
+          }, initialValue: GeneratorService(null)),
+        ],
+        builder: (BuildContext _) {
+          return WhenRebuilderOr(
+            observe: () => RM.get<MainService>(),
+            onWaiting: () => SplashscreenPage(),
+            builder: (context, model) {
+              return MainView();
+            },
+          );
         },
       ),
     );
