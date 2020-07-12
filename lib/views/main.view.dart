@@ -1,19 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:file_chooser/file_chooser.dart' as fc;
-import 'package:kup_app/views/models/generate.model.dart';
-import 'package:kup_app/views/models/main.model.dart';
-import 'package:kup_app/widgets/commit_list.widget.dart';
+import 'package:kup_app/services/generator.service.dart';
+import 'package:kup_app/services/main.service.dart';
 import 'package:kup_app/widgets/title.widget.dart';
 import 'package:logger/logger.dart';
-import 'package:provider/provider.dart';
-import 'package:stacked/stacked.dart';
+import 'package:states_rebuilder/states_rebuilder.dart';
 
-class MainView extends ViewModelWidget<MainViewModel> {
-  const MainView({Key key}) : super(key: key, reactive: true);
+class MainView extends StatelessWidget {
+  MainView({Key key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context, MainViewModel model) {
-    Logger().i(model.shell);
+  Widget build(BuildContext context) {
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(24.0),
@@ -36,7 +33,7 @@ class MainView extends ViewModelWidget<MainViewModel> {
                   'Repository path:',
                   style: TextStyle(color: Colors.grey),
                 ),
-                _buildSelectRepositoryButton(model),
+                _buildSelectRepositoryButton(),
                 SizedBox(
                   height: 12.0,
                 ),
@@ -49,7 +46,7 @@ class MainView extends ViewModelWidget<MainViewModel> {
     );
   }
 
-  Row _buildSelectRepositoryButton(MainViewModel model) {
+  Row _buildSelectRepositoryButton() {
     return Row(
       children: [
         OutlineButton.icon(
@@ -61,7 +58,11 @@ class MainView extends ViewModelWidget<MainViewModel> {
               allowsMultipleSelection: false,
             );
             if (!paths.canceled) {
-              model.setRepositoryDirectory(paths.paths[0]);
+              RM.get<GeneratorService>().setState(
+                (s) => s.setRepositoryDirectory(paths.paths[0]),
+                filterTags: ['run'],
+                //shouldAwait: true,
+              );
             }
           },
           icon: Icon(Icons.folder_open),
@@ -73,45 +74,28 @@ class MainView extends ViewModelWidget<MainViewModel> {
         SizedBox(
           width: 10.0,
         ),
-        Expanded(child: Text(model.repositoryDirectory))
+        WhenRebuilderOr<GeneratorService>(
+          tag: 'test',
+          observe: () => RM.get<GeneratorService>(),
+          onWaiting: () => LinearProgressIndicator(),
+          onIdle: () => Text('Idle'),
+          onError: (error) => Text('Error'),
+          builder: (context, ReactiveModel<GeneratorService> model) =>
+              Expanded(child: Text(model.state.repositoryDirectory)),
+        ),
       ],
     );
   }
 }
 
-class GenerateCSVWidget extends ViewModelWidget<MainViewModel> {
+class GenerateCSVWidget extends StatelessWidget {
   GenerateCSVWidget({
-    Key key,
-  }) : super(key: key, reactive: true);
-
-  @override
-  Widget build(BuildContext context, MainViewModel mainViewModel) {
-    Logger().i(context);
-    return DateRangeFormWidget();
-    // return ViewModelBuilder<GenerateModelView>.reactive(
-    //   viewModelBuilder: () => GenerateModelView(),
-    //   builder: (context, model, child) {
-    //     return Column(
-    //       children: [
-    //         SizedBox(
-    //           height: 50.0,
-    //         ),
-    //         DateRangeFormWidget(),
-    //       ],
-    //     );
-    //   },
-    // );
-  }
-}
-
-class WrapperWidget extends StatelessWidget {
-  const WrapperWidget({
     Key key,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Text('fewfew');
+    return DateRangeFormWidget();
   }
 }
 
@@ -135,51 +119,52 @@ class _DateRangeFormWidgetState extends State<DateRangeFormWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return ViewModelBuilder<GenerateModelView>.reactive(
-      viewModelBuilder: () => GenerateModelView(),
-      builder: (context, model, child) {
-        Logger().w(model);
-        return Form(
-          key: _formKey,
-          child: Column(
+    ReactiveModel<GeneratorService> generatorService =
+        RM.get<GeneratorService>();
+    return Form(
+      key: _formKey,
+      child: Column(
+        children: [
+          Row(
             children: [
-              Row(
-                children: [
-                  Expanded(
-                    child: TextFormField(
-                      initialValue: model.startDate,
-                      validator: (value) => _validate(value),
-                      //onChanged: (value) => model.setStartDate(value),
-                      decoration: InputDecoration(
-                        labelText: 'Start date',
-                      ),
-                      onSaved: (newValue) {
-                        model.setStartDate = newValue;
-                      },
-                    ),
+              Expanded(
+                child: TextFormField(
+                  initialValue: generatorService.state.startDate,
+                  validator: (value) => _validate(value),
+                  decoration: InputDecoration(
+                    labelText: 'Start date',
                   ),
-                  SizedBox(
-                    width: 30.0,
-                  ),
-                  Expanded(
-                    child: TextFormField(
-                      initialValue: model.endDate,
-                      validator: (value) => _validate(value),
-                      //onChanged: (value) => model.setEndDate(value),
-                      decoration: InputDecoration(
-                        labelText: 'End date',
-                      ),
-                      onSaved: (newValue) {
-                        model.setEndDate = newValue;
-                      },
-                    ),
-                  ),
-                ],
+                  onSaved: (newValue) {
+                    generatorService.setState((s) => s.setStartDate = newValue);
+                  },
+                ),
               ),
               SizedBox(
-                height: 20.0,
+                width: 30.0,
               ),
-              OutlineButton(
+              Expanded(
+                child: TextFormField(
+                  initialValue: generatorService.state.endDate,
+                  validator: (value) => _validate(value),
+                  decoration: InputDecoration(
+                    labelText: 'End date',
+                  ),
+                  onSaved: (newValue) {
+                    generatorService.setState((s) => s.setEndDate = newValue);
+                  },
+                ),
+              ),
+            ],
+          ),
+          SizedBox(
+            height: 20.0,
+          ),
+          WhenRebuilderOr<GeneratorService>(
+            tag: 'run',
+            observe: () => RM.get<GeneratorService>(),
+            onWaiting: () => LinearProgressIndicator(),
+            builder: (context, model) {
+              return OutlineButton(
                 borderSide: BorderSide(
                   color: Colors.green[400],
                 ),
@@ -189,16 +174,15 @@ class _DateRangeFormWidgetState extends State<DateRangeFormWidget> {
                 onPressed: () {
                   if (_formKey.currentState.validate()) {
                     _formKey.currentState.save();
-                    Logger().wtf(model.startDate);
-                    model.run();
+                    model.setState((s) => s.run(), filterTags: ['test', 'run']);
                   }
                 },
                 child: Text('Run script!'),
-              ),
-            ],
+              );
+            },
           ),
-        );
-      },
+        ],
+      ),
     );
   }
 }
