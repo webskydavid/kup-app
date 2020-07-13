@@ -2,6 +2,8 @@
 
 **KUP**app**ka**
 
+[![Codemagic build status](https://api.codemagic.io/apps/5f0c36a95b0086dd74d94988/5f0c36a95b0086dd74d94987/status_badge.svg)](https://codemagic.io/apps/5f0c36a95b0086dd74d94988/5f0c36a95b0086dd74d94987/latest_build)
+
 For now there is only support for macOS. ~~Put the kup_app.app file into application directory and run the app.~~
 
 ### TODO
