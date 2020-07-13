@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:file_chooser/file_chooser.dart' as fc;
 import 'package:kup_app/services/generator.service.dart';
-import 'package:kup_app/services/main.service.dart';
 import 'package:kup_app/widgets/title.widget.dart';
-import 'package:logger/logger.dart';
 import 'package:states_rebuilder/states_rebuilder.dart';
 
 class MainView extends StatelessWidget {
@@ -60,8 +58,7 @@ class MainView extends StatelessWidget {
             if (!paths.canceled) {
               RM.get<GeneratorService>().setState(
                 (s) => s.setRepositoryDirectory(paths.paths[0]),
-                filterTags: ['run'],
-                //shouldAwait: true,
+                filterTags: ['test'],
               );
             }
           },
@@ -77,7 +74,7 @@ class MainView extends StatelessWidget {
         WhenRebuilderOr<GeneratorService>(
           tag: 'test',
           observe: () => RM.get<GeneratorService>(),
-          onWaiting: () => LinearProgressIndicator(),
+          onWaiting: () => Text('foweijhfewjfoejfoej'),
           onIdle: () => Text('Idle'),
           onError: (error) => Text('Error'),
           builder: (context, ReactiveModel<GeneratorService> model) =>
@@ -113,7 +110,10 @@ class _DateRangeFormWidgetState extends State<DateRangeFormWidget> {
 
   _validate(value) {
     if (value == '') {
-      return 'Empty field';
+      return 'Empty field!';
+    }
+    if (DateTime.tryParse(value) == null) {
+      return "Wrong date format!";
     }
   }
 
@@ -159,27 +159,20 @@ class _DateRangeFormWidgetState extends State<DateRangeFormWidget> {
           SizedBox(
             height: 20.0,
           ),
-          WhenRebuilderOr<GeneratorService>(
-            tag: 'run',
-            observe: () => RM.get<GeneratorService>(),
-            onWaiting: () => LinearProgressIndicator(),
-            builder: (context, model) {
-              return OutlineButton(
-                borderSide: BorderSide(
-                  color: Colors.green[400],
-                ),
-                hoverColor: Colors.green[50],
-                textColor: Colors.green[500],
-                padding: EdgeInsets.all(20),
-                onPressed: () {
-                  if (_formKey.currentState.validate()) {
-                    _formKey.currentState.save();
-                    model.setState((s) => s.run(), filterTags: ['test', 'run']);
-                  }
-                },
-                child: Text('Run script!'),
-              );
+          OutlineButton(
+            borderSide: BorderSide(
+              color: Colors.green[400],
+            ),
+            hoverColor: Colors.green[50],
+            textColor: Colors.green[500],
+            padding: EdgeInsets.all(20),
+            onPressed: () {
+              if (_formKey.currentState.validate()) {
+                _formKey.currentState.save();
+                generatorService.setState((s) => s.run(), filterTags: ['run']);
+              }
             },
+            child: Text('Run script!'),
           ),
         ],
       ),
