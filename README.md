@@ -10,12 +10,13 @@ For now there is only support for macOS. ~~Put the kup_app.app file into applica
 
 ##### Stage 1
 
-- [ ] CI for building app
+- [x] CI for building app
+- [ ] Release app to github
 - [x] Splashscreen
 - [x] Downloading kup-script from repo
 - [x] Extracting zip file with kup-script
 - [x] Choose repository directory and save path locally
-- [ ] Changing date range
+- [x] Changing date range
 - [x] Generating CSV by date range (static)
 
 ##### Stage 2
