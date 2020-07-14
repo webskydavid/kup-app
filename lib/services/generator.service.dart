@@ -5,7 +5,6 @@ import 'package:kup_app/services/main.service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class GeneratorService {
-  bool isBusy = false;
   MainService mainService;
   SharedPreferences shared;
   String repositoryDirectory = '';
@@ -29,8 +28,6 @@ class GeneratorService {
   }
 
   void run() async {
-    isBusy = true;
-    print('runMainScript()');
     await mainService.shell.run('''
       #!/bin/bash
       #./cleanup.sh
@@ -40,8 +37,7 @@ class GeneratorService {
       ./generateKUPreportData.sh
     ''');
 
-    //await generateListFromCSV();
-    isBusy = false;
+    await generateListFromCSV();
   }
 
   Future<void> generateListFromCSV() async {
