@@ -22,12 +22,15 @@ For now there is only support for macOS. ~~Put the kup_app.app file into applica
 
 ##### Stage 2
 
+- [ ] Generate pdf file in-app
+
+##### Stage 3
+
 - [ ] Add datepicker
 - [ ] Showing list for current data range after generating
-- [ ] Generate pdf file in-app
 - [ ] Open finder plugin for macos to get the generated pdf __(optional)__
 
-##### State 3
+##### State 4
 
 - [ ] Listing commit history with sorting
       ...
