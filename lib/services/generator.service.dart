@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:csv/csv.dart';
 import 'package:kup_app/services/main.service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -8,8 +7,8 @@ class GeneratorService {
   MainService mainService;
   SharedPreferences shared;
   String repositoryDirectory = '';
-  String startDate = '2020-07-01';
-  String endDate = '2020-07-31';
+  String startDate = '';
+  String endDate = '';
   List<List<dynamic>> commitList = [];
 
   GeneratorService(this.mainService);
@@ -35,9 +34,10 @@ class GeneratorService {
       ./sortGitChangesList.sh
       ./aggregateGitChanges.sh
       ./generateKUPreportData.sh
+      ./outputToPdf.sh "$startDate" "$endDate"
     ''');
 
-    await generateListFromCSV();
+    //await generateListFromCSV();
   }
 
   Future<void> generateListFromCSV() async {
@@ -59,5 +59,16 @@ class GeneratorService {
 
   void getRepositoryDirectory() {
     repositoryDirectory = shared.getString('repositoryDirectory');
+  }
+
+  currentDateRange() {
+    DateTime currentDate = DateTime.now();
+
+    int firstDay = 1;
+    int lastDay = DateTime(currentDate.year, currentDate.month + 1, 0).day;
+    startDate =
+        '${currentDate.year}-${currentDate.month.toString().padLeft(2, '0')}-${firstDay.toString().padLeft(2, '0')}';
+    endDate =
+        '${currentDate.year}-${currentDate.month.toString().padLeft(2, '0')}-${lastDay.toString().padLeft(2, '0')}';
   }
 }
