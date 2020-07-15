@@ -18,14 +18,19 @@ For now there is only support for macOS. ~~Put the kup_app.app file into applica
 - [x] Choose repository directory and save path locally
 - [x] Changing date range
 - [x] Generating CSV by date range (static)
+- [x] Run pdf generator form kup-script and copy pdf to Documents
 
 ##### Stage 2
 
-- [ ] Showing list for current data range after generating
-- [ ] Fill data for word template **(optional)**
-- [ ] Generate pdf file
+- [ ] Generate pdf file in-app
 
-##### State 3
+##### Stage 3
+
+- [ ] Add datepicker
+- [ ] Showing list for current data range after generating
+- [ ] Open finder plugin for macos to get the generated pdf __(optional)__
+
+##### State 4
 
 - [ ] Listing commit history with sorting
       ...
