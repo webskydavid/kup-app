@@ -37,6 +37,18 @@ class GeneratorService {
       ./outputToPdf.sh "$startDate" "$endDate"
     ''');
 
+    // var list = Directory(
+    //         '${mainService.workingDirectory}/${VALUES.kupScriptDirectory}/output/')
+    //     .listSync();
+
+    // list.sort((a, b) {
+    //   a.path.length.compareTo(b.path.length);
+    // }).forEach((element) {
+    //   print(File(element.path).toString());
+    // });
+
+    //await mainService.shell.run('open ./output/*');
+
     //await generateListFromCSV();
   }
 
