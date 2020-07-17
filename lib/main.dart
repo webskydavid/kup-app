@@ -32,8 +32,8 @@ class MyApp extends StatelessWidget {
           }, initialValue: GeneratorService(null)),
         ],
         builder: (BuildContext _) {
-          return WhenRebuilderOr<MainService>(
-            observe: () => RM.get<MainService>(),
+          return WhenRebuilderOr<GeneratorService>(
+            observe: () => RM.get<GeneratorService>(),
             onWaiting: () => SplashscreenPage(),
             builder: (context, model) {
               return MainView();

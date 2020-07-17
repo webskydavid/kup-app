@@ -89,7 +89,7 @@ class MainService {
 
   Future<String> getWorkingDirectory() async {
     // TODO: remove delay
-    await Future.delayed(Duration(milliseconds: 500));
+    await Future.delayed(Duration(milliseconds: 1000));
     return (await getApplicationSupportDirectory()).path;
   }
 

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'package:csv/csv.dart';
 import 'package:kup_app/services/main.service.dart';
@@ -27,6 +28,12 @@ class GeneratorService {
   }
 
   void run() async {
+    bool outputExists =
+        await Directory('${mainService.scriptDirectory}/output').exists();
+    if (outputExists) {
+      await mainService.shell.run('rm -R output');
+    }
+
     await mainService.shell.run('''
       #!/bin/bash
       #./cleanup.sh
@@ -37,19 +44,14 @@ class GeneratorService {
       ./outputToPdf.sh "$startDate" "$endDate"
     ''');
 
-    // var list = Directory(
-    //         '${mainService.workingDirectory}/${VALUES.kupScriptDirectory}/output/')
-    //     .listSync();
-
-    // list.sort((a, b) {
-    //   a.path.length.compareTo(b.path.length);
-    // }).forEach((element) {
-    //   print(File(element.path).toString());
-    // });
-
-    //await mainService.shell.run('open ./output/*');
-
-    //await generateListFromCSV();
+    Timer.periodic(Duration(milliseconds: 1000), (timer) async {
+      String path = '${mainService.scriptDirectory}/output';
+      if (Directory(path).existsSync() &&
+          Directory(path).listSync().length != 0) {
+        await mainService.shell.run('open ./output');
+        timer.cancel();
+      }
+    });
   }
 
   Future<void> generateListFromCSV() async {

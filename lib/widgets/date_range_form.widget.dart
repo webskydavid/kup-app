@@ -91,8 +91,6 @@ class _DateRangeFormWidgetState extends State<DateRangeFormWidget> {
                 child: Text('Generowanie KUPY, poczekaj!'),
               );
             },
-            onIdle: () => Text('Idle'),
-            onError: (error) => Text('Error'),
             builder: (context, model) {
               return OutlineButton(
                 borderSide: BorderSide(
