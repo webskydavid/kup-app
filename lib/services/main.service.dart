@@ -12,7 +12,6 @@ class VALUES {
   static String commit = 'master';
   static String zipFileName = 'script.zip';
   static String kupScriptDirectory = 'kup-script';
-  static String csvDirectory = 'csv';
 }
 
 class MainService {
@@ -29,7 +28,6 @@ class MainService {
     scriptDirectory = '$workingDirectory/${VALUES.kupScriptDirectory}';
     shell = Shell(workingDirectory: scriptDirectory, commandVerbose: true);
 
-    await createDirectory(VALUES.csvDirectory);
     await getKupScript();
     await unzipAndSave();
     return this;
