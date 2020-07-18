@@ -85,4 +85,8 @@ class GeneratorService {
     endDate =
         '${currentDate.year}-${currentDate.month.toString().padLeft(2, '0')}-${lastDay.toString().padLeft(2, '0')}';
   }
+
+  void goToDirectory() async {
+    await mainService.shell.run('open .');
+  }
 }

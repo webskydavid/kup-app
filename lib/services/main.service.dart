@@ -82,7 +82,7 @@ class MainService {
   }
 
   Future<void> changePermission() async {
-    return await shell.run('chmod -R 755 $workingDirectory');
+    return await shell.run('chmod -R 755 .');
   }
 
   Future<String> getWorkingDirectory() async {
