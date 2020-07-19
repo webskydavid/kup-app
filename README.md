@@ -11,7 +11,7 @@ For now there is only support for macOS. ~~Put the kup_app.app file into applica
 ##### Stage 1
 
 - [x] CI for building app
-- [ ] Release app to github
+- [x] Release app to github
 - [x] Splashscreen
 - [x] Downloading kup-script from repo
 - [x] Extracting zip file with kup-script
@@ -28,7 +28,7 @@ For now there is only support for macOS. ~~Put the kup_app.app file into applica
 
 - [ ] Add datepicker
 - [ ] Showing list for current data range after generating
-- [ ] Open finder plugin for macos to get the generated pdf __(optional)__
+- [ ] Open finder plugin for macos to get the generated pdf **(optional)**
 
 ##### State 4
 
