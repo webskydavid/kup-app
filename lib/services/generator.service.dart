@@ -14,9 +14,10 @@ class GeneratorService {
 
   GeneratorService(this._mainService);
 
-  Future<void> init() async {
+  Future<GeneratorService> init() async {
     _shared = await SharedPreferences.getInstance();
     _getRepositoryDirectory();
+    return this;
   }
 
   set setStartDate(value) {

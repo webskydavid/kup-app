@@ -23,9 +23,7 @@ class MyApp extends StatelessWidget {
           Inject<MainService>.future(() => MainService().init()),
           Inject<GeneratorService>.future(() async {
             final mainService = await RM.get<MainService>().stateAsync;
-            var gs = GeneratorService(mainService);
-            await gs.init();
-            return gs;
+            return GeneratorService(mainService)..init();
           }, initialValue: GeneratorService(null)),
         ],
         builder: (BuildContext _) {
