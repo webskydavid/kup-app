@@ -22,6 +22,7 @@ For now there is only support for macOS. ~~Put the kup_app.app file into applica
 
 ##### Stage 2
 
+- [ ] Check if new version of kup-script exists and replace it
 - [ ] Generate pdf file in-app
 
 ##### Stage 3
