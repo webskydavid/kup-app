@@ -5,18 +5,18 @@ import 'package:kup_app/services/main.service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class GeneratorService {
-  MainService mainService;
-  SharedPreferences shared;
   String repositoryDirectory = '';
   String startDate = '';
   String endDate = '';
   List<List<dynamic>> commitList = [];
+  final MainService _mainService;
+  SharedPreferences _shared;
 
-  GeneratorService(this.mainService);
+  GeneratorService(this._mainService);
 
   Future<void> init() async {
-    shared = await SharedPreferences.getInstance();
-    getRepositoryDirectory();
+    _shared = await SharedPreferences.getInstance();
+    _getRepositoryDirectory();
   }
 
   set setStartDate(value) {
@@ -28,34 +28,13 @@ class GeneratorService {
   }
 
   void run() async {
-    bool outputExists =
-        await Directory('${mainService.scriptDirectory}/output').exists();
-    if (outputExists) {
-      await mainService.shell.run('rm -R output');
-    }
-
-    await mainService.shell.run('''
-      #!/bin/bash
-      #./cleanup.sh
-      ./collectGitChangesList.sh "$repositoryDirectory" "$startDate" "$endDate"
-      ./sortGitChangesList.sh
-      ./aggregateGitChanges.sh
-      ./generateKUPreportData.sh
-      ./outputToPdf.sh "$startDate" "$endDate"
-    ''');
-
-    Timer.periodic(Duration(milliseconds: 1000), (timer) async {
-      String path = '${mainService.scriptDirectory}/output';
-      if (Directory(path).existsSync() &&
-          Directory(path).listSync().length != 0) {
-        await mainService.shell.run('open ./output');
-        timer.cancel();
-      }
-    });
+    await _removeOutputDirectory();
+    await _generateKupReport();
+    await _watchOutputDirectory();
   }
 
   Future<void> generateListFromCSV() async {
-    String path = '${mainService.scriptDirectory}/kupReportData.csv';
+    String path = '${_mainService.kupScriptPath}/kupReportData.csv';
     commitList = CsvToListConverter().convert(
       await File(path).readAsString(),
       fieldDelimiter: ',',
@@ -65,19 +44,12 @@ class GeneratorService {
   }
 
   Future<void> setRepositoryDirectory(String path) async {
-    print('setRepositoryDirectory()');
-    await shared.setString('repositoryDirectory', path);
+    await _shared.setString('repositoryDirectory', path);
     repositoryDirectory = path;
-    await Future.delayed(Duration(milliseconds: 1000));
   }
 
-  void getRepositoryDirectory() {
-    repositoryDirectory = shared.getString('repositoryDirectory');
-  }
-
-  currentDateRange() {
+  void currentDateRange() {
     DateTime currentDate = DateTime.now();
-
     int firstDay = 1;
     int lastDay = DateTime(currentDate.year, currentDate.month + 1, 0).day;
     startDate =
@@ -87,6 +59,41 @@ class GeneratorService {
   }
 
   void goToDirectory() async {
-    await mainService.shell.run('open .');
+    await _mainService.shell.run('open .');
+  }
+
+  void _getRepositoryDirectory() {
+    repositoryDirectory = _shared.getString('repositoryDirectory');
+  }
+
+  Future<void> _removeOutputDirectory() async {
+    bool outputExists =
+        await Directory('${_mainService.kupScriptPath}/output').exists();
+    if (outputExists) {
+      await _mainService.shell.run('rm -R output');
+    }
+  }
+
+  Future<void> _watchOutputDirectory() async {
+    Timer.periodic(Duration(milliseconds: 1000), (timer) async {
+      String path = '${_mainService.kupScriptPath}/output';
+      if (Directory(path).existsSync() &&
+          Directory(path).listSync().length != 0) {
+        await _mainService.shell.run('open ./output');
+        timer.cancel();
+      }
+    });
+  }
+
+  Future<void> _generateKupReport() async {
+    await _mainService.shell.run('''
+      #!/bin/bash
+      #./cleanup.sh
+      ./collectGitChangesList.sh "$repositoryDirectory" "$startDate" "$endDate"
+      ./sortGitChangesList.sh
+      ./aggregateGitChanges.sh
+      ./generateKUPreportData.sh
+      ./outputToPdf.sh "$startDate" "$endDate"
+    ''');
   }
 }

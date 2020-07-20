@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:kup_app/services/generator.service.dart';
-import 'package:kup_app/services/main.service.dart';
-
-import 'package:kup_app/views/main.view.dart';
-import 'package:kup_app/views/splashscreen.view.dart';
 import 'package:states_rebuilder/states_rebuilder.dart';
+import 'package:kup_app/services/services.dart';
+import 'package:kup_app/views/views.dart';
 
 void main() {
   RM.debugWidgetsRebuild = true;

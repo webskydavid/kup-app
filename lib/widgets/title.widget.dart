@@ -9,7 +9,14 @@ class TitleWidget extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Tjfie(color: color),
+        Text(
+          'KUP',
+          style: TextStyle(
+            color: color,
+            fontWeight: FontWeight.bold,
+            fontSize: 30.0,
+          ),
+        ),
         Text(
           'app',
           style: TextStyle(
@@ -27,27 +34,6 @@ class TitleWidget extends StatelessWidget {
           ),
         ),
       ],
-    );
-  }
-}
-
-class Tjfie extends StatelessWidget {
-  const Tjfie({
-    Key key,
-    @required this.color,
-  }) : super(key: key);
-
-  final Color color;
-
-  @override
-  Widget build(BuildContext context) {
-    return Text(
-      'KUP',
-      style: TextStyle(
-        color: color,
-        fontWeight: FontWeight.bold,
-        fontSize: 30.0,
-      ),
     );
   }
 }

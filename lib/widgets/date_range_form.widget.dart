@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:kup_app/services/generator.service.dart';
+import 'package:kup_app/services/services.dart';
 import 'package:states_rebuilder/states_rebuilder.dart';
 
 class DateRangeFormWidget extends StatefulWidget {
@@ -51,9 +51,7 @@ class _DateRangeFormWidgetState extends State<DateRangeFormWidget> {
                       },
                     ),
                   ),
-                  SizedBox(
-                    width: 30.0,
-                  ),
+                  SizedBox(width: 30.0),
                   Expanded(
                     child: TextFormField(
                       initialValue: model.state.endDate,
@@ -73,17 +71,13 @@ class _DateRangeFormWidgetState extends State<DateRangeFormWidget> {
               );
             },
           ),
-          SizedBox(
-            height: 20.0,
-          ),
+          SizedBox(height: 20.0),
           WhenRebuilderOr<GeneratorService>(
             tag: 'generate',
             observe: () => RM.get<GeneratorService>(),
             onWaiting: () {
               return OutlineButton(
-                borderSide: BorderSide(
-                  color: Colors.grey[400],
-                ),
+                borderSide: BorderSide(color: Colors.grey[400]),
                 hoverColor: Colors.grey[50],
                 textColor: Colors.grey[500],
                 padding: EdgeInsets.all(20),
@@ -93,9 +87,7 @@ class _DateRangeFormWidgetState extends State<DateRangeFormWidget> {
             },
             builder: (context, model) {
               return OutlineButton(
-                borderSide: BorderSide(
-                  color: Colors.green[400],
-                ),
+                borderSide: BorderSide(color: Colors.green[400]),
                 hoverColor: Colors.green[50],
                 textColor: Colors.green[500],
                 padding: EdgeInsets.all(20),

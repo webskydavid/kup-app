@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:kup_app/services/generator.service.dart';
-import 'package:kup_app/services/main.service.dart';
-import 'package:kup_app/widgets/date_range_form.widget.dart';
-import 'package:kup_app/widgets/select_repository.widget.dart';
-import 'package:kup_app/widgets/title.widget.dart';
+import 'package:kup_app/services/services.dart';
+import 'package:kup_app/widgets/widgets.dart';
 import 'package:states_rebuilder/states_rebuilder.dart';
 
 class MainView extends StatelessWidget {
@@ -23,17 +20,9 @@ class MainView extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 TitleWidget(color: Colors.black),
-                SizedBox(
-                  height: 12.0,
-                ),
-                Text(
-                  'Ścieżka do repozytoriów:',
-                  style: TextStyle(color: Colors.grey),
-                ),
+                SizedBox(height: 12.0),
                 SelectRepositoryDirectory(),
-                SizedBox(
-                  height: 12.0,
-                ),
+                SizedBox(height: 12.0),
                 DateRangeFormWidget(),
               ],
             ),
@@ -42,11 +31,12 @@ class MainView extends StatelessWidget {
               builder: (context, model) => Column(
                 children: [
                   FlatButton.icon(
-                      onPressed: () {
-                        model.state.goToDirectory();
-                      },
-                      icon: Icon(Icons.folder_open),
-                      label: Text('Pliki aplikacji'))
+                    onPressed: () {
+                      model.state.goToDirectory();
+                    },
+                    icon: Icon(Icons.folder_open),
+                    label: Text('Pliki aplikacji'),
+                  )
                 ],
               ),
             ),

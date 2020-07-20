@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:kup_app/widgets/title.widget.dart';
+import 'package:kup_app/widgets/widgets.dart';
 
 class SplashscreenPage extends StatelessWidget {
   const SplashscreenPage({Key key}) : super(key: key);

@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:typed_data';
+
 import 'package:archive/archive.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
@@ -16,82 +17,80 @@ class VALUES {
 
 class MainService {
   String workingDirectory = '';
-  String scriptDirectory = '';
+  String kupScriptPath = '';
+  String scriptZipFile = '';
+
   Shell shell;
-  Client http = Client();
+  Client _http = Client();
   List commitList = [];
 
   MainService();
 
   Future<MainService> init() async {
-    workingDirectory = await getWorkingDirectory();
-    scriptDirectory = '$workingDirectory/${VALUES.kupScriptDirectory}';
-    shell = Shell(workingDirectory: scriptDirectory, commandVerbose: true);
+    workingDirectory = await _getWorkingDirectory();
+    kupScriptPath = '$workingDirectory/${VALUES.kupScriptDirectory}';
+    scriptZipFile = '$workingDirectory/${VALUES.zipFileName}';
 
-    await getKupScript();
-    await unzipAndSave();
+    shell = Shell(workingDirectory: kupScriptPath, commandVerbose: true);
+
+    await _getKupScript();
+    await _unzipAndSave();
+
     return this;
   }
 
-  Future<void> getKupScript() async {
-    if (!(await scriptFolderExists())) {
-      Response res = await http.get(
+  Future<void> _getKupScript() async {
+    if (!(await _scriptFolderExists())) {
+      Response res = await _http.get(
         VALUES.gitRepositoryUrl + VALUES.commit,
         headers: {'Accept': 'application/vnd.github.v3+json'},
       );
-      File file = File('$workingDirectory/script.zip');
+      File file = File(scriptZipFile);
       await file.writeAsBytes(res.bodyBytes);
     }
   }
 
-  Future<void> unzipAndSave() async {
+  Future<void> _unzipAndSave() async {
     try {
-      if (!(await scriptFolderExists()) && await zipFileExists()) {
-        Uint8List zip =
-            File('$workingDirectory/${VALUES.zipFileName}').readAsBytesSync();
+      if (!(await _scriptFolderExists()) && await _zipFileExists()) {
+        Uint8List zip = File(scriptZipFile).readAsBytesSync();
         Archive files = ZipDecoder().decodeBytes(zip);
         String stringToReplace = files[0].name;
-        Directory('$scriptDirectory').createSync();
+        Directory('$kupScriptPath').createSync();
 
         files.forEach((element) async {
           String fileName =
               element.name.replaceFirst(RegExp(stringToReplace), '');
           if (element.isFile) {
             List<int> data = element.content as List<int>;
-            File file = File('$scriptDirectory/$fileName');
+            File file = File('$kupScriptPath/$fileName');
             file.createSync(recursive: true);
             file.writeAsBytesSync(data);
           } else {
-            Directory('$scriptDirectory/$fileName').createSync();
+            Directory('$kupScriptPath/$fileName').createSync();
           }
         });
-        await changePermission();
+        await _changePermission();
       }
     } catch (e) {
       throw ErrorHint(e.toString());
     }
   }
 
-  Future<bool> zipFileExists() async {
-    return await File('$workingDirectory/${VALUES.zipFileName}').exists();
+  Future<bool> _zipFileExists() async {
+    return await File(scriptZipFile).exists();
   }
 
-  Future<bool> scriptFolderExists() async {
-    return await Directory('$workingDirectory/${VALUES.kupScriptDirectory}')
-        .exists();
+  Future<bool> _scriptFolderExists() async {
+    return await Directory(kupScriptPath).exists();
   }
 
-  Future<void> changePermission() async {
+  Future<void> _changePermission() async {
     return await shell.run('chmod -R 755 .');
   }
 
-  Future<String> getWorkingDirectory() async {
-    // TODO: remove delay
+  Future<String> _getWorkingDirectory() async {
     await Future.delayed(Duration(milliseconds: 1000));
     return (await getApplicationSupportDirectory()).path;
-  }
-
-  Future<void> createDirectory(String folder) async {
-    return await Directory('$workingDirectory/$folder').create();
   }
 }
