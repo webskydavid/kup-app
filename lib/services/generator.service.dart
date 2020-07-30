@@ -89,7 +89,7 @@ class GeneratorService {
   Future<void> _generateKupReport() async {
     await _mainService.shell.run('''
       #!/bin/bash
-      #./cleanup.sh
+      ./cleanup.sh
       ./collectGitChangesList.sh "$repositoryDirectory" "$startDate" "$endDate"
       ./sortGitChangesList.sh
       ./aggregateGitChanges.sh
